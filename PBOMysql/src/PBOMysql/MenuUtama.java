@@ -7,11 +7,22 @@ package PBOMysql;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.awt.event.*;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+
+import net.sf.jasperreports.engine.JasperFillManager; 
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.view.JasperViewer;
+
+
 /**
  *
  * @author mmahf
@@ -35,6 +46,8 @@ public class MenuUtama extends javax.swing.JFrame {
         tampil_databarang();
         tampil_datapelanggan();
         tampil_datatransaksi();
+        nofaktur();
+        Waktu();
     }
     
     private void kontrol_atas(boolean x){
@@ -94,7 +107,7 @@ public class MenuUtama extends javax.swing.JFrame {
         tmodel.addColumn("JUMLAH");
         tmodel.addColumn("HARGA");
 
-        Table3.setModel(tmodel);
+        TableBarang.setModel(tmodel);
         
         conn = (Connection) DriverManager.getConnection(url, user, pass);
         stm = conn.createStatement();
@@ -114,10 +127,10 @@ public class MenuUtama extends javax.swing.JFrame {
 
         tmodel.addColumn("KODE");
         tmodel.addColumn("NAMA");
-        tmodel.addColumn("Telp");
-        tmodel.addColumn("Alamat");
-        tmodel.addColumn("Kota");
-        Table2.setModel(tmodel);
+        tmodel.addColumn("TELP");
+        tmodel.addColumn("ALAMAT");
+        tmodel.addColumn("KOTA");
+        TablePelanggan.setModel(tmodel);
         
         conn = (Connection) DriverManager.getConnection(url, user, pass);
         stm = conn.createStatement();
@@ -172,7 +185,7 @@ public class MenuUtama extends javax.swing.JFrame {
         tmodel.addColumn("TOTAL");
         tmodel.addColumn("NAMA_KASIR");
 
-        Table4.setModel(tmodel);
+        TablePenjualan.setModel(tmodel);
         
         conn = (Connection) DriverManager.getConnection(url, user, pass);
         stm = conn.createStatement();
@@ -324,6 +337,47 @@ public class MenuUtama extends javax.swing.JFrame {
         }
     }
     
+    private void nofaktur() {
+        try {
+            conn = (Connection) DriverManager.getConnection(url, user, pass);
+            stm = conn.createStatement();
+            ResultSet res = stm.executeQuery("select * from penjualan order by nomor_faktur desc");
+            if (res.next()) {
+                String nofak = res.getString("nomor_faktur").substring(1);
+                String AN = "" + (Integer.parseInt(nofak) + 1);
+                String Nol = "";
+
+                switch (AN.length()) {
+                    case 1:
+                        Nol = "000";
+                        break;
+                    case 2:
+                        Nol = "00";
+                        break;
+                    case 3:
+                        Nol = "0";
+                        break;
+                    case 4:
+                        Nol = "";
+                        break;
+                    default:
+                        break;
+                }
+
+                xnofak.setText("F" + Nol + AN);
+            } else {
+                xnofak.setText("F0001");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    private void Waktu(){
+        Date tgl = new Date();
+        xtgl.setDate(tgl);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -351,10 +405,10 @@ public class MenuUtama extends javax.swing.JFrame {
         panelmaster = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
+        Data_pelanggan = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        Table2 = new javax.swing.JTable();
+        TablePelanggan = new javax.swing.JTable();
         save_pelanggan = new javax.swing.JButton();
         update_pelanggan = new javax.swing.JButton();
         delete_pelanggan = new javax.swing.JButton();
@@ -368,10 +422,12 @@ public class MenuUtama extends javax.swing.JFrame {
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         kd_pel = new javax.swing.JTextField();
-        jPanel11 = new javax.swing.JPanel();
+        Laporan_Pelanggan = new javax.swing.JButton();
+        ExportPelanggan = new javax.swing.JButton();
+        Data_barang = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        Table3 = new javax.swing.JTable();
+        TableBarang = new javax.swing.JTable();
         savebarang = new javax.swing.JButton();
         update_barang = new javax.swing.JButton();
         delete_barang = new javax.swing.JButton();
@@ -385,6 +441,8 @@ public class MenuUtama extends javax.swing.JFrame {
         jLabel29 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
         kd_brg = new javax.swing.JTextField();
+        Laporan_Barang = new javax.swing.JButton();
+        ExportBarang = new javax.swing.JButton();
         paneltransaksi = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -428,7 +486,9 @@ public class MenuUtama extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        Table4 = new javax.swing.JTable();
+        TablePenjualan = new javax.swing.JTable();
+        Laporan_Penjualan = new javax.swing.JButton();
+        ExportPenjualan = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -600,12 +660,12 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jPanel10.setBackground(new java.awt.Color(255, 204, 204));
+        Data_pelanggan.setBackground(new java.awt.Color(255, 204, 204));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Data Pelanggan");
 
-        Table2.setModel(new javax.swing.table.DefaultTableModel(
+        TablePelanggan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -616,7 +676,7 @@ public class MenuUtama extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(Table2);
+        jScrollPane3.setViewportView(TablePelanggan);
 
         save_pelanggan.setText("Save");
         save_pelanggan.addActionListener(new java.awt.event.ActionListener() {
@@ -673,59 +733,77 @@ public class MenuUtama extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        Laporan_Pelanggan.setText("Cetak");
+        Laporan_Pelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Laporan_PelangganActionPerformed(evt);
+            }
+        });
+
+        ExportPelanggan.setText("Export");
+        ExportPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExportPelangganActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Data_pelangganLayout = new javax.swing.GroupLayout(Data_pelanggan);
+        Data_pelanggan.setLayout(Data_pelangganLayout);
+        Data_pelangganLayout.setHorizontalGroup(
+            Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Data_pelangganLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(Data_pelangganLayout.createSequentialGroup()
                         .addComponent(save_pelanggan)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(update_pelanggan)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(delete_pelanggan))
+                        .addComponent(delete_pelanggan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Laporan_Pelanggan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ExportPelanggan))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 933, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Data_pelangganLayout.createSequentialGroup()
+                        .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addGroup(jPanel10Layout.createSequentialGroup()
-                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(Data_pelangganLayout.createSequentialGroup()
+                                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(kd_pel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(nm_pel, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel22))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(telp_pel, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel23))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel24)
                                     .addComponent(almt_pel, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(kota_pel, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel25))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        Data_pelangganLayout.setVerticalGroup(
+            Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Data_pelangganLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
                     .addComponent(jLabel22)
                     .addComponent(jLabel23)
                     .addComponent(jLabel24)
                     .addComponent(jLabel25))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nm_pel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(telp_pel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(almt_pel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -734,19 +812,21 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(Data_pelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(save_pelanggan)
                     .addComponent(update_pelanggan)
-                    .addComponent(delete_pelanggan))
+                    .addComponent(delete_pelanggan)
+                    .addComponent(Laporan_Pelanggan)
+                    .addComponent(ExportPelanggan))
                 .addGap(14, 14, 14))
         );
 
-        jPanel11.setBackground(new java.awt.Color(255, 255, 204));
+        Data_barang.setBackground(new java.awt.Color(255, 255, 204));
 
         jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel20.setText("Data Barang");
 
-        Table3.setModel(new javax.swing.table.DefaultTableModel(
+        TableBarang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -757,7 +837,7 @@ public class MenuUtama extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(Table3);
+        jScrollPane4.setViewportView(TableBarang);
 
         savebarang.setText("Save");
         savebarang.addActionListener(new java.awt.event.ActionListener() {
@@ -814,57 +894,75 @@ public class MenuUtama extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
+        Laporan_Barang.setText("Cetak");
+        Laporan_Barang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Laporan_BarangActionPerformed(evt);
+            }
+        });
+
+        ExportBarang.setText("Export");
+        ExportBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExportBarangActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Data_barangLayout = new javax.swing.GroupLayout(Data_barang);
+        Data_barang.setLayout(Data_barangLayout);
+        Data_barangLayout.setHorizontalGroup(
+            Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Data_barangLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Data_barangLayout.createSequentialGroup()
                         .addComponent(savebarang)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(update_barang)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(delete_barang))
+                        .addComponent(delete_barang)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Laporan_Barang)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ExportBarang))
                     .addComponent(jLabel20)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 932, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Data_barangLayout.createSequentialGroup()
+                        .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel26)
                             .addComponent(kd_brg, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nm_brg, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel27))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jml_brg, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel28))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(sat_brg, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel29))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel30)
                             .addComponent(hrg_brg, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
+        Data_barangLayout.setVerticalGroup(
+            Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Data_barangLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jLabel20)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel26)
                     .addComponent(jLabel27)
                     .addComponent(jLabel28)
                     .addComponent(jLabel29)
                     .addComponent(jLabel30))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nm_brg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jml_brg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sat_brg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -873,10 +971,12 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addGap(9, 9, 9)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(Data_barangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(savebarang)
                     .addComponent(update_barang)
-                    .addComponent(delete_barang))
+                    .addComponent(delete_barang)
+                    .addComponent(Laporan_Barang)
+                    .addComponent(ExportBarang))
                 .addGap(17, 17, 17))
         );
 
@@ -887,8 +987,8 @@ public class MenuUtama extends javax.swing.JFrame {
             .addGroup(panelmasterLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelmasterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Data_pelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Data_barang, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -898,9 +998,9 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Data_pelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Data_barang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -959,6 +1059,12 @@ public class MenuUtama extends javax.swing.JFrame {
         jLabel13.setText("Alamat Pelanggan");
 
         jLabel31.setText("Nama Kasir");
+
+        xnmkasir.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                xnmkasirKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1248,7 +1354,7 @@ public class MenuUtama extends javax.swing.JFrame {
 
         jPanel12.setBackground(new java.awt.Color(255, 204, 204));
 
-        Table4.setModel(new javax.swing.table.DefaultTableModel(
+        TablePenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -1259,7 +1365,21 @@ public class MenuUtama extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(Table4);
+        jScrollPane2.setViewportView(TablePenjualan);
+
+        Laporan_Penjualan.setText("Cetak");
+        Laporan_Penjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Laporan_PenjualanActionPerformed(evt);
+            }
+        });
+
+        ExportPenjualan.setText("Export");
+        ExportPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExportPenjualanActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -1267,15 +1387,25 @@ public class MenuUtama extends javax.swing.JFrame {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 965, Short.MAX_VALUE)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 965, Short.MAX_VALUE)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(Laporan_Penjualan, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(ExportPenjualan)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
-                .addContainerGap(51, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47))
+                .addGap(33, 33, 33)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Laporan_Penjualan)
+                    .addComponent(ExportPenjualan))
+                .addGap(34, 34, 34))
         );
 
         javax.swing.GroupLayout panellaporanLayout = new javax.swing.GroupLayout(panellaporan);
@@ -1344,7 +1474,7 @@ public class MenuUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_homebuttonActionPerformed
 
     private void masterbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_masterbuttonActionPerformed
-        // TODO add your handling code here:
+        //TODO add your handling code here:
         contentpanel.removeAll();
         contentpanel.repaint();
         contentpanel.revalidate();
@@ -1352,6 +1482,7 @@ public class MenuUtama extends javax.swing.JFrame {
         contentpanel.add(panelmaster);
         contentpanel.repaint();
         contentpanel.revalidate();
+
     }//GEN-LAST:event_masterbuttonActionPerformed
 
     private void transaksibuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksibuttonActionPerformed
@@ -1383,9 +1514,6 @@ public class MenuUtama extends javax.swing.JFrame {
 
     private void xnofakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_xnofakKeyPressed
         // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            xkdpel.requestFocus();
-        }
     }//GEN-LAST:event_xnofakKeyPressed
 
     private void xkdpelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_xkdpelKeyPressed
@@ -1455,7 +1583,7 @@ public class MenuUtama extends javax.swing.JFrame {
     private void InputButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputButtonActionPerformed
         // TODO add your handling code here:
         kontrol_atas(true);
-        xtgl.requestFocus();
+        xnmkasir.requestFocus();
     }//GEN-LAST:event_InputButtonActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
@@ -1643,9 +1771,73 @@ public class MenuUtama extends javax.swing.JFrame {
     private void xtglKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_xtglKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            xnofak.requestFocus();
+            xnmkasir.requestFocus();
         }
     }//GEN-LAST:event_xtglKeyPressed
+
+    private void Laporan_PelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Laporan_PelangganActionPerformed
+        // TODO add your handling code here:
+       try {
+            conn = (Connection) DriverManager.getConnection(url, user, pass);
+            File namafile = new File("src/Laporan/report_pelanggan.jasper");
+            JasperPrint jp = JasperFillManager.fillReport(namafile.getPath(), null, conn);
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_Laporan_PelangganActionPerformed
+
+    private void Laporan_BarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Laporan_BarangActionPerformed
+        // TODO add your handling code here:
+        try {
+            conn = (Connection) DriverManager.getConnection(url, user, pass);
+            File namafile = new File("src/Laporan/report_barang.jasper");
+            JasperPrint jp = JasperFillManager.fillReport(namafile.getPath(), null, conn);
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_Laporan_BarangActionPerformed
+
+    private void Laporan_PenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Laporan_PenjualanActionPerformed
+        // TODO add your handling code here:
+         try {
+            conn = (Connection) DriverManager.getConnection(url, user, pass);
+            File namafile = new File("src/Laporan/report_penjualan.jasper");
+            JasperPrint jp = JasperFillManager.fillReport(namafile.getPath(), null, conn);
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_Laporan_PenjualanActionPerformed
+
+    private void xnmkasirKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_xnmkasirKeyPressed
+        // TODO add your handling code here:
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            xkdpel.requestFocus();
+        }
+    }//GEN-LAST:event_xnmkasirKeyPressed
+
+    private void ExportPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportPenjualanActionPerformed
+        // TODO add your handling code here:
+        ExportToExcel ex = new ExportToExcel(TablePenjualan, new File("DataPenjualan.xls")); 
+    }//GEN-LAST:event_ExportPenjualanActionPerformed
+
+    private void ExportPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportPelangganActionPerformed
+        // TODO add your handling code here:
+        ExportToExcel ex = new ExportToExcel(TablePelanggan, new File("DataPelanggan.xls"));
+    }//GEN-LAST:event_ExportPelangganActionPerformed
+
+    private void ExportBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBarangActionPerformed
+        // TODO add your handling code here:
+        ExportToExcel ex = new ExportToExcel(TableBarang, new File("DataBarang.xls"));
+    }//GEN-LAST:event_ExportBarangActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1675,27 +1867,33 @@ public class MenuUtama extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new MenuUtama().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new MenuUtama().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel Data_barang;
+    private javax.swing.JPanel Data_pelanggan;
     private javax.swing.JButton DeleteButton;
+    private javax.swing.JButton ExportBarang;
+    private javax.swing.JButton ExportPelanggan;
+    private javax.swing.JButton ExportPenjualan;
     private javax.swing.JButton InputButton;
+    private javax.swing.JButton Laporan_Barang;
+    private javax.swing.JButton Laporan_Pelanggan;
+    private javax.swing.JButton Laporan_Penjualan;
     private javax.swing.JPanel PanelMenu;
     private javax.swing.JPanel PanelUtama;
     private javax.swing.JButton SaveButton;
     private javax.swing.JTable Tabel1;
-    private javax.swing.JTable Table2;
-    private javax.swing.JTable Table3;
-    private javax.swing.JTable Table4;
+    private javax.swing.JTable TableBarang;
+    private javax.swing.JTable TablePelanggan;
+    private javax.swing.JTable TablePenjualan;
     private javax.swing.JTextField almt_pel;
     private javax.swing.JPanel contentpanel;
     private javax.swing.JButton delete_barang;
@@ -1735,8 +1933,6 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
