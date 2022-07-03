@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f3733ab7-24b3-4c1a-a385-efac0fba7d57">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+    <style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+    <style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="12"/>
+    <queryString language="SQL">
+		<![CDATA[SELECT
+     cek_out.`Kode_tamu` AS Kode_Tamu,
+     cek_out.`Tgl_checkout` AS Tgl_CheckOUT,
+     cek_out.`Jam_checkout` AS Jam_CheckOUT,
+     cek_out.`Kode_kamar` AS Kode_Kamar,
+     cek_out.`Lama_inap` AS Lama_Inap
+FROM
+     `cek_out` cek_out]]>
+    </queryString>
+    <field name="Kode_Tamu" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="Tgl_CheckOUT" class="java.sql.Date" >
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="Jam_CheckOUT" class="java.sql.Time">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="Kode_Kamar" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="Lama_Inap" class="java.lang.Integer">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="70" splitType="Stretch">
+            <image>
+                <reportElement x="275" y="0" width="300" height="64" uuid="38d6cd55-d9bb-4fa0-9e6e-8e83b5b48d90"/>
+                <imageExpression><![CDATA["leaf_banner_gray.png"]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement style="Title" x="0" y="13" width="263" height="33" uuid="202ff937-5831-47e8-8e96-1516929d2625"/>
+                <textElement verticalAlignment="Middle"/>
+                <text><![CDATA[Laporan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="SubTitle" x="117" y="46" width="157" height="22" uuid="b15cdbb6-539b-4a46-ba4b-3cfb2005cb2d"/>
+                <text><![CDATA[Data Check Out]]></text>
+            </staticText>
+        </band>
+    </title>
+    <pageHeader>
+        <band splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="36" splitType="Stretch">
+            <line>
+                <reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="3d03c8b8-c162-4fba-8c3f-c59a8364d15a"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#999999"/>
+                </graphicElement>
+            </line>
+            <staticText>
+                <reportElement style="Column header" x="0" y="19" width="111" height="15" uuid="c5011a6b-ec78-48e4-bf3f-0fc69324c709"/>
+                <text><![CDATA[Kode_Tamu]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Column header" x="111" y="19" width="111" height="15" uuid="09be7a28-16b1-4fb8-a66c-5759c32cef7c"/>
+                <text><![CDATA[Tgl_CheckOUT]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Column header" x="222" y="19" width="111" height="15" uuid="16272e35-1db7-462e-a77a-a9337ed878d6"/>
+                <text><![CDATA[Jam_CheckOUT]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Column header" x="333" y="19" width="111" height="15" uuid="87601463-0d2b-48e8-a1f5-d197768f80af"/>
+                <text><![CDATA[Kode_Kamar]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Column header" x="444" y="19" width="111" height="15" uuid="37b75aac-75ad-41b9-a920-3cb622eba490"/>
+                <text><![CDATA[Lama_Inap]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="16" splitType="Stretch">
+            <line>
+                <reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="e1cbaeed-2368-4b26-a08f-1fe8c6367c70"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#999999"/>
+                </graphicElement>
+            </line>
+            <textField>
+                <reportElement style="Detail" x="0" y="0" width="111" height="15" uuid="9214c782-1997-4b59-b7e6-addd7d929b54"/>
+                <textFieldExpression><![CDATA[$F{Kode_Tamu}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="111" y="0" width="111" height="15" uuid="b1823301-6694-44e4-ad05-92a5db33dce0"/>
+                <textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").format($F{Tgl_CheckOUT})]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="222" y="0" width="111" height="15" uuid="888c379b-7659-4f3a-b8d5-77bd7c6d7177"/>
+                <textFieldExpression><![CDATA[new SimpleDateFormat("HH:mm:ss").format($F{Jam_CheckOUT})]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="333" y="0" width="111" height="15" uuid="e84e7a17-9540-4573-b8d6-aeff07e03b05"/>
+                <textFieldExpression><![CDATA[$F{Kode_Kamar}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="444" y="0" width="111" height="15" uuid="16da9868-d796-4459-80c8-dcfae7938358"/>
+                <textFieldExpression><![CDATA[$F{Lama_Inap}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="45" splitType="Stretch">
+            <line>
+                <reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="8a1b06dd-21ac-4622-99cb-2c9b3d3a3cff"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#999999"/>
+                </graphicElement>
+            </line>
+        </band>
+    </columnFooter>
+    <pageFooter>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="c052cf8a-fbaf-416d-a53f-0496bd539d1d"/>
+                <textElement textAlignment="Right">
+                    <font size="10" isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="1f8b98f0-5e53-4418-b29e-00cc96d2562f"/>
+                <textElement>
+                    <font size="10" isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd MM yyyy">
+                <reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="9bde680e-2de1-4e3c-b748-2c16b9a48c3a"/>
+                <textElement>
+                    <font size="10" isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+    <summary>
+        <band splitType="Stretch"/>
+    </summary>
+</jasperReport>
